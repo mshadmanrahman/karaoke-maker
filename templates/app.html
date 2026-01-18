@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karaoke Maker - Create Karaoke Videos with AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #F3F1EA;
+            color: #1D1D1D;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero with retro vibes */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            border-radius: 24px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        }
+
+        .hero::before {
+            content: '🎤';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            transform: rotate(-15deg);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Progress Steps - Retro cards */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            background: white;
+            border: 3px solid #1D1D1D;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 4px 4px 0 #1D1D1D;
+        }
+
+        .step:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #1D1D1D;
+        }
+
+        .step.active {
+            border-color: #6366F1;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+
+        .step.completed {
+            border-color: #10B981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: white;
+            border: 3px solid #1D1D1D;
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        .step.completed .step-number {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1D1D1D;
+        }
+
+        /* Card/Section - Retro style */
+        .card {
+            background: white;
+            border: 3px solid #1D1D1D;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 8px 8px 0 #1D1D1D;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0 #1D1D1D;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid #1D1D1D;
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            color: #1D1D1D;
+            font-weight: 700;
+        }
+
+        /* Input fields - Retro */
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: white;
+            border: 2px solid #1D1D1D;
+            border-radius: 12px;
+            color: #1D1D1D;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366F1;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #1D1D1D;
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        /* Buttons - Bold retro style */
+        button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            color: white;
+            border: 2px solid #1D1D1D;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 4px 4px 0 #1D1D1D;
+            font-family: 'Inter', sans-serif;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #1D1D1D;
+        }
+
+        button:active:not(:disabled) {
+            transform: translate(0, 0);
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1D1D1D;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #F9FAFB;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .btn-large {
+            padding: 18px 36px;
+            font-size: 17px;
+            width: 100%;
+        }
+
+        /* Status messages - Retro badges */
+        .status {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid #1D1D1D;
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        .status.info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Audio player */
+        audio {
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 12px;
+        }
+
+        /* Big time display - Retro digital */
+        .time-display {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            border: 3px solid #1D1D1D;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 64px;
+            font-weight: 700;
+            margin: 24px 0;
+            color: white;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
+            box-shadow: 6px 6px 0 #1D1D1D;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Controls grid */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        /* Lyric input */
+        .lyric-input {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            border: 2px solid #1D1D1D;
+            border-radius: 12px;
+            color: #1D1D1D;
+            font-size: 18px;
+            margin: 16px 0;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 4px 4px 0 #1D1D1D;
+            transition: all 0.2s;
+        }
+
+        .lyric-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0 #1D1D1D;
+        }
+
+        /* Lyrics list */
+        .lyrics-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .lyrics-list::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .lyrics-list::-webkit-scrollbar-track {
+            background: #F3F1EA;
+            border-radius: 6px;
+        }
+
+        .lyrics-list::-webkit-scrollbar-thumb {
+            background: #6366F1;
+            border-radius: 6px;
+            border: 2px solid #1D1D1D;
+        }
+
+        .lyric-item {
+            background: white;
+            border: 2px solid #1D1D1D;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s;
+            box-shadow: 3px 3px 0 #1D1D1D;
+        }
+
+        .lyric-item:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #1D1D1D;
+        }
+
+        .lyric-item.playing {
+            border-color: #6366F1;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, white 100%);
+            border-left: 6px solid #6366F1;
+        }
+
+        .lyric-time {
+            min-width: 140px;
+            font-weight: 700;
+            color: #6366F1;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+        }
+
+        .lyric-text {
+            flex: 1;
+            font-size: 15px;
+            color: #1D1D1D;
+            font-weight: 500;
+        }
+
+        .lyric-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lyric-actions button {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-delete {
+            background: white;
+            color: #EF4444;
+            border-color: #EF4444;
+        }
+
+        .btn-delete:hover {
+            background: #FEE2E2;
+        }
+
+        .btn-play {
+            background: white;
+            color: #3B82F6;
+            border-color: #3B82F6;
+        }
+
+        .btn-play:hover {
+            background: #DBEAFE;
+        }
+
+        /* Hint box - Retro callout */
+        .hint {
+            background: #FEF3C7;
+            border: 3px solid #1D1D1D;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.8;
+            box-shadow: 4px 4px 0 #1D1D1D;
+        }
+
+        .hint strong {
+            color: #92400E;
+            font-weight: 700;
+        }
+
+        kbd {
+            background: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 2px solid #1D1D1D;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #6366F1;
+            font-size: 13px;
+            box-shadow: 2px 2px 0 #1D1D1D;
+        }
+
+        .count {
+            color: #6366F1;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .spinner {
+            border: 3px solid #E5E7EB;
+            border-top: 3px solid #6366F1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Fun emoji decorations */
+        .emoji-decoration {
+            font-size: 48px;
+            opacity: 0.15;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .steps {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .time-display {
+                font-size: 42px;
+                padding: 24px;
+            }
+
+            .card {
+                padding: 20px;
+                box-shadow: 4px 4px 0 #1D1D1D;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>🎤 Karaoke Maker</h1>
+                <p>Turn any song into karaoke magic with AI. Download, separate, time lyrics, and generate professional videos.</p>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="steps">
+            <div class="step" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-title">Download</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-title">Separate</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-title">Time Lyrics</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <div class="step-title">Generate</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Download -->
+        <div class="card" id="section1">
+            <div class="section-header">
+                <div class="section-icon">📥</div>
+                <h2>Download from YouTube</h2>
+            </div>
+            <div class="input-group">
+                <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here..." />
+                <button onclick="downloadVideo()">Download</button>
+            </div>
+            <div id="downloadStatus"></div>
+        </div>
+
+        <!-- Step 2: Separate -->
+        <div class="card hidden" id="section2">
+            <div class="section-header">
+                <div class="section-icon">🎵</div>
+                <h2>Separate Vocals</h2>
+            </div>
+            <p style="margin-bottom: 16px; color: #666; font-weight: 500;">AI will magically separate vocals from instrumentals. This takes 2-3 minutes.</p>
+            <button class="btn-large" onclick="separateVocals()">✨ Separate Vocals</button>
+            <div id="separateStatus"></div>
+        </div>
+
+        <!-- Step 3: Time Lyrics -->
+        <div class="card hidden" id="section3">
+            <div class="section-header">
+                <div class="section-icon">⏱️</div>
+                <h2>Time Your Lyrics</h2>
+            </div>
+
+            <div class="hint">
+                <strong>🎯 Quick Start Guide:</strong><br>
+                1. (Optional) Click "Auto-Extract" to get AI-generated lyrics<br>
+                2. Play the song and press <kbd>S</kbd> when a line starts<br>
+                3. Type the lyric, then press <kbd>E</kbd> when it ends<br>
+                4. Repeat for all lines and you're done!
+            </div>
+
+            <button class="btn-secondary" onclick="autoExtract()">🤖 Auto-Extract Lyrics (Optional)</button>
+            <div id="extractStatus"></div>
+
+            <audio id="audioPlayer" controls></audio>
+
+            <div class="time-display" id="currentTime">0:00.0</div>
+
+            <div class="controls">
+                <button class="btn-secondary" onclick="playPause()">⏯ Play/Pause</button>
+                <button class="btn-secondary" onclick="skipBack()">⏪ -3s</button>
+                <button class="btn-secondary" onclick="skipForward()">⏩ +3s</button>
+            </div>
+
+            <div class="controls">
+                <button onclick="setStart()">📍 START (S)</button>
+                <button class="btn-success" onclick="setEnd()">✓ END (E)</button>
+            </div>
+
+            <input type="text" id="lyricInput" class="lyric-input"
+                   placeholder="Type lyric here..." />
+
+            <div id="timingStatus"></div>
+
+            <div style="margin-top: 32px;">
+                <h3 style="color: #1D1D1D; margin-bottom: 16px; font-size: 20px; font-weight: 700;">
+                    Your Lyrics (<span id="count" class="count">0</span> lines)
+                </h3>
+                <div class="lyrics-list" id="lyricsList"></div>
+            </div>
+
+            <button class="btn-success btn-large" onclick="proceedToGenerate()" style="margin-top: 24px;">
+                Continue to Generate →
+            </button>
+        </div>
+
+        <!-- Step 4: Generate -->
+        <div class="card hidden" id="section4">
+            <div class="section-header">
+                <div class="section-icon">🎬</div>
+                <h2>Generate Karaoke Video</h2>
+            </div>
+            <p style="margin-bottom: 20px; color: #666; font-weight: 500;">
+                Ready to create your karaoke masterpiece with <span class="count" id="finalCount">0</span> perfectly timed lyrics!
+                This will take 3-5 minutes.
+            </p>
+            <button class="btn-success btn-large" onclick="generateVideo()">
+                🎥 Generate Karaoke Video
+            </button>
+            <div id="generateStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        let lyrics = [];
+        let startTime = null;
+        let currentAudioFile = null;
+        const audio = document.getElementById('audioPlayer');
+
+        // Update current time
+        audio.addEventListener('timeupdate', () => {
+            const t = audio.currentTime;
+            const mins = Math.floor(t / 60);
+            const secs = (t % 60).toFixed(1);
+            document.getElementById('currentTime').textContent = `${mins}:${secs.padStart(4, '0')}`;
+
+            lyrics.forEach((lyric, i) => {
+                const el = document.getElementById(`lyric-${i}`);
+                if (el) {
+                    if (t >= lyric.start && t <= lyric.end) {
+                        el.classList.add('playing');
+                    } else {
+                        el.classList.remove('playing');
+                    }
+                }
+            });
+        });
+
+        // Download video
+        async function downloadVideo() {
+            const url = document.getElementById('youtubeUrl').value.trim();
+            if (!url) {
+                showStatus('downloadStatus', 'Please enter a YouTube URL', 'error');
+                return;
+            }
+
+            showStatus('downloadStatus', '<span class="loading"><span class="spinner"></span>Downloading audio...</span>', 'info');
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('downloadStatus', `✓ Downloaded: ${data.title}`, 'success');
+                    markStepComplete(1);
+                    showSection(2);
+                } else {
+                    showStatus('downloadStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('downloadStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // Separate vocals
+        async function separateVocals() {
+            showStatus('separateStatus', '<span class="loading"><span class="spinner"></span>Separating vocals... (2-3 minutes)</span>', 'info');
+
+            try {
+                const response = await fetch('/api/separate', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('separateStatus', '✓ Vocals separated successfully!', 'success');
+                    markStepComplete(2);
+                    await loadAudioPlayer();
+                    showSection(3);
+                } else {
+                    showStatus('separateStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('separateStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // Load audio player
+        async function loadAudioPlayer() {
+            const statusResp = await fetch('/api/status');
+            const status = await statusResp.json();
+
+            if (status.audio_filename) {
+                currentAudioFile = status.audio_filename;
+                audio.src = `/api/audio/${encodeURIComponent(currentAudioFile)}`;
+                audio.load();
+            }
+        }
+
+        // Auto-extract lyrics
+        async function autoExtract() {
+            showStatus('extractStatus', '<span class="loading"><span class="spinner"></span>Extracting lyrics with AI... (1-2 minutes)</span>', 'info');
+
+            try {
+                const response = await fetch('/api/extract-lyrics', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    lyrics = data.lyrics;
+                    showStatus('extractStatus', `✓ Extracted ${lyrics.length} lines (Language: ${data.language})`, 'success');
+                    renderLyrics();
+                } else {
+                    showStatus('extractStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('extractStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // Audio controls
+        function playPause() {
+            if (audio.paused) audio.play();
+            else audio.pause();
+        }
+
+        function skipBack() {
+            audio.currentTime = Math.max(0, audio.currentTime - 3);
+        }
+
+        function skipForward() {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 3);
+        }
+
+        // Set start time
+        function setStart() {
+            startTime = audio.currentTime;
+            showStatus('timingStatus', `✓ Start: ${formatTime(startTime)}`, 'success');
+            document.getElementById('lyricInput').focus();
+        }
+
+        // Set end time
+        function setEnd() {
+            if (startTime === null) {
+                showStatus('timingStatus', 'Press START first!', 'error');
+                return;
+            }
+
+            const endTime = audio.currentTime;
+            const text = document.getElementById('lyricInput').value.trim();
+
+            if (!text) {
+                showStatus('timingStatus', 'Please type the lyric text!', 'error');
+                document.getElementById('lyricInput').focus();
+                return;
+            }
+
+            lyrics.push({start: startTime, end: endTime, text: text});
+            lyrics.sort((a, b) => a.start - b.start);
+
+            document.getElementById('lyricInput').value = '';
+            startTime = null;
+            showStatus('timingStatus', '');
+            renderLyrics();
+        }
+
+        // Render lyrics
+        function renderLyrics() {
+            const container = document.getElementById('lyricsList');
+            container.innerHTML = '';
+
+            lyrics.forEach((lyric, i) => {
+                const div = document.createElement('div');
+                div.className = 'lyric-item';
+                div.id = `lyric-${i}`;
+
+                div.innerHTML = `
+                    <div class="lyric-time">${formatTime(lyric.start)} → ${formatTime(lyric.end)}</div>
+                    <div class="lyric-text">${lyric.text}</div>
+                    <div class="lyric-actions">
+                        <button class="btn-play" onclick="seekTo(${lyric.start})">▶</button>
+                        <button class="btn-delete" onclick="deleteLyric(${i})">✕</button>
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            document.getElementById('count').textContent = lyrics.length;
+            document.getElementById('finalCount').textContent = lyrics.length;
+        }
+
+        // Delete lyric
+        function deleteLyric(index) {
+            lyrics.splice(index, 1);
+            renderLyrics();
+        }
+
+        // Seek to time
+        function seekTo(time) {
+            audio.currentTime = time;
+            audio.play();
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = (seconds % 60).toFixed(1);
+            return `${mins}:${secs.padStart(4, '0')}`;
+        }
+
+        // Proceed to generate
+        async function proceedToGenerate() {
+            if (lyrics.length === 0) {
+                alert('Please add at least one lyric line!');
+                return;
+            }
+
+            // Save lyrics
+            await fetch('/api/save-lyrics', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lyrics})
+            });
+
+            markStepComplete(3);
+            showSection(4);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Generate video
+        async function generateVideo() {
+            showStatus('generateStatus', '<span class="loading"><span class="spinner"></span>Generating karaoke video... (3-5 minutes)</span>', 'info');
+
+            try {
+                const response = await fetch('/api/generate', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('generateStatus', `✓ Video ready! Saved to: ${data.output_path}`, 'success');
+                    markStepComplete(4);
+                } else {
+                    showStatus('generateStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('generateStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // UI helpers
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = message ? `<div class="status ${type}">${message}</div>` : '';
+        }
+
+        function markStepComplete(step) {
+            document.getElementById(`step${step}`).classList.add('completed');
+            if (step < 4) {
+                document.getElementById(`step${step + 1}`).classList.add('active');
+            }
+        }
+
+        function showSection(num) {
+            document.getElementById(`section${num}`).classList.remove('hidden');
+            document.getElementById(`section${num}`).scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+
+            if (e.key === ' ') {
+                e.preventDefault();
+                playPause();
+            } else if (e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                setStart();
+            } else if (e.key === 'e' || e.key === 'E') {
+                e.preventDefault();
+                setEnd();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                skipBack();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                skipForward();
+            }
+        });
+
+        // Initialize
+        document.getElementById('step1').classList.add('active');
+    </script>
+</body>
+</html>

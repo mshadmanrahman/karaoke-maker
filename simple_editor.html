@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karaoke Lyrics Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .audio-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            margin-bottom: 15px;
+        }
+
+        .file-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .file-input input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        audio {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .current-time {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin: 15px 0;
+        }
+
+        .add-lyric-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .add-lyric-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .lyric-input-group {
+            display: grid;
+            grid-template-columns: 80px 80px 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-add {
+            background: #27ae60;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .lyrics-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .lyrics-list h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .lyric-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lyric-item.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .lyric-time {
+            font-size: 12px;
+            color: #666;
+            min-width: 120px;
+            font-weight: 600;
+        }
+
+        .lyric-text {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .lyric-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .lyric-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-play {
+            background: #3498db;
+        }
+
+        .btn-play:hover {
+            background: #2980b9;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f4f8;
+            border-radius: 8px;
+        }
+
+        .export-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .keyboard-help {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .keyboard-help h4 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .keyboard-help ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .keyboard-help li {
+            margin: 5px 0;
+            color: #856404;
+        }
+
+        .keyboard-help kbd {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Karaoke Lyrics Timer</h1>
+            <p>Add lyrics with perfect timing using keyboard shortcuts</p>
+        </div>
+
+        <div class="content">
+            <!-- Keyboard Shortcuts Help -->
+            <div class="keyboard-help">
+                <h4>⌨️ Keyboard Shortcuts</h4>
+                <ul>
+                    <li><kbd>Space</kbd> - Play/Pause</li>
+                    <li><kbd>S</kbd> - Set Start Time for new lyric</li>
+                    <li><kbd>E</kbd> - Set End Time and add lyric</li>
+                    <li><kbd>←</kbd> - Skip back 5 seconds</li>
+                    <li><kbd>→</kbd> - Skip forward 5 seconds</li>
+                </ul>
+            </div>
+
+            <!-- Audio Player -->
+            <div class="audio-section">
+                <div class="file-input">
+                    <label>Load Audio File (MP3, WAV, etc.)</label>
+                    <input type="file" id="audioFile" accept="audio/*" onchange="loadAudio(event)" />
+                </div>
+                <audio id="audioPlayer" controls></audio>
+                <div class="current-time" id="currentTime">0:00.0</div>
+                <div class="controls">
+                    <button onclick="playPause()">⏯ Play/Pause</button>
+                    <button onclick="skipBack()">⏪ -5s</button>
+                    <button onclick="skipForward()">⏩ +5s</button>
+                    <button onclick="setStart()">Set Start (S)</button>
+                    <button onclick="setEnd()">Set End (E)</button>
+                </div>
+            </div>
+
+            <!-- Add Lyric -->
+            <div class="add-lyric-section">
+                <h3>Add Lyric Line</h3>
+                <div class="lyric-input-group">
+                    <input type="number" id="startTime" step="0.1" placeholder="Start" />
+                    <input type="number" id="endTime" step="0.1" placeholder="End" />
+                    <input type="text" id="lyricText" placeholder="Lyric text..." />
+                    <button class="btn-add" onclick="addLyric()">Add</button>
+                </div>
+            </div>
+
+            <!-- Lyrics List -->
+            <div class="lyrics-list">
+                <h3>Lyrics Timeline (<span id="lyricCount">0</span> lines)</h3>
+                <div id="lyricsList"></div>
+            </div>
+
+            <!-- Export -->
+            <div class="export-section">
+                <h3>Export Lyrics</h3>
+                <button onclick="exportJSON()">Download JSON</button>
+                <button onclick="copyToClipboard()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lyrics = [];
+        let startTimeBuffer = null;
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        // Load audio file
+        function loadAudio(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                audioPlayer.src = url;
+                audioPlayer.load();
+            }
+        }
+
+        // Update current time display
+        audioPlayer.addEventListener('timeupdate', () => {
+            const time = audioPlayer.currentTime;
+            document.getElementById('currentTime').textContent = formatTime(time);
+
+            // Highlight current lyric
+            lyrics.forEach((lyric, index) => {
+                const element = document.getElementById(`lyric-${index}`);
+                if (element) {
+                    if (time >= lyric.start && time <= lyric.end) {
+                        element.classList.add('active');
+                    } else {
+                        element.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = (seconds % 60).toFixed(1);
+            return `${mins}:${secs.padStart(4, '0')}`;
+        }
+
+        // Play/Pause
+        function playPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+        }
+
+        // Skip back
+        function skipBack() {
+            audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 5);
+        }
+
+        // Skip forward
+        function skipForward() {
+            audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 5);
+        }
+
+        // Set start time
+        function setStart() {
+            startTimeBuffer = audioPlayer.currentTime;
+            document.getElementById('startTime').value = startTimeBuffer.toFixed(1);
+            document.getElementById('lyricText').focus();
+        }
+
+        // Set end time
+        function setEnd() {
+            const endTime = audioPlayer.currentTime;
+            document.getElementById('endTime').value = endTime.toFixed(1);
+
+            if (startTimeBuffer !== null) {
+                document.getElementById('lyricText').focus();
+            }
+        }
+
+        // Add lyric
+        function addLyric() {
+            const start = parseFloat(document.getElementById('startTime').value);
+            const end = parseFloat(document.getElementById('endTime').value);
+            const text = document.getElementById('lyricText').value.trim();
+
+            if (isNaN(start) || isNaN(end) || !text) {
+                alert('Please fill in start time, end time, and lyric text');
+                return;
+            }
+
+            lyrics.push({ start, end, text });
+            lyrics.sort((a, b) => a.start - b.start);
+
+            // Clear inputs
+            document.getElementById('startTime').value = '';
+            document.getElementById('endTime').value = '';
+            document.getElementById('lyricText').value = '';
+            startTimeBuffer = null;
+
+            renderLyrics();
+        }
+
+        // Render lyrics list
+        function renderLyrics() {
+            const container = document.getElementById('lyricsList');
+            container.innerHTML = '';
+
+            lyrics.forEach((lyric, index) => {
+                const div = document.createElement('div');
+                div.className = 'lyric-item';
+                div.id = `lyric-${index}`;
+
+                div.innerHTML = `
+                    <div class="lyric-time">${formatTime(lyric.start)} → ${formatTime(lyric.end)}</div>
+                    <div class="lyric-text">${lyric.text}</div>
+                    <div class="lyric-actions">
+                        <button class="btn-play" onclick="seekTo(${lyric.start})">▶</button>
+                        <button class="btn-danger" onclick="deleteLyric(${index})">✕</button>
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            document.getElementById('lyricCount').textContent = lyrics.length;
+        }
+
+        // Delete lyric
+        function deleteLyric(index) {
+            if (confirm('Delete this lyric?')) {
+                lyrics.splice(index, 1);
+                renderLyrics();
+            }
+        }
+
+        // Seek to time
+        function seekTo(time) {
+            audioPlayer.currentTime = time;
+            audioPlayer.play();
+        }
+
+        // Export JSON
+        function exportJSON() {
+            const data = {
+                segments: lyrics.map(l => ({
+                    start: l.start,
+                    end: l.end,
+                    text: l.text
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lyrics.json';
+            a.click();
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const data = {
+                segments: lyrics.map(l => ({
+                    start: l.start,
+                    end: l.end,
+                    text: l.text
+                }))
+            };
+
+            navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
+                alert('Lyrics copied to clipboard!');
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ignore if typing in input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            switch(e.key) {
+                case ' ':
+                    e.preventDefault();
+                    playPause();
+                    break;
+                case 's':
+                case 'S':
+                    e.preventDefault();
+                    setStart();
+                    break;
+                case 'e':
+                case 'E':
+                    e.preventDefault();
+                    setEnd();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    skipBack();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    skipForward();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

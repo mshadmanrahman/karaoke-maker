@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karaoke Maker - Lyrics Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-badge {
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .audio-player {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .lyrics-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .lyric-line {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .lyric-line:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .lyric-line.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .lyric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .lyric-timing {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .timing-input {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .timing-input input {
+            width: 70px;
+            padding: 4px 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .lyric-text {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .lyric-text:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .lyric-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .lyric-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .status-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+
+        .add-lyric-btn {
+            width: 100%;
+            background: #27ae60;
+            margin-top: 10px;
+        }
+
+        .add-lyric-btn:hover {
+            background: #229954;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Karaoke Maker</h1>
+            <p>Interactive Lyrics Timing Editor</p>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Download -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="step-badge">1</span>
+                    <span>Download from YouTube</span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here..." />
+                    <button onclick="downloadAudio()">Download</button>
+                </div>
+                <div id="downloadStatus"></div>
+            </div>
+
+            <!-- Step 2: Separate -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="step-badge">2</span>
+                    <span>Separate Vocals</span>
+                </div>
+                <button id="separateBtn" onclick="separateVocals()" disabled>Separate Vocals (2-3 min)</button>
+                <div id="separateStatus"></div>
+            </div>
+
+            <!-- Step 3: Extract Lyrics -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="step-badge">3</span>
+                    <span>Extract Lyrics</span>
+                </div>
+                <button id="extractBtn" onclick="extractLyrics()" disabled>Extract Lyrics with AI</button>
+                <div id="extractStatus"></div>
+            </div>
+
+            <!-- Step 4: Audio Player -->
+            <div class="section" id="audioSection" style="display: none;">
+                <div class="section-title">
+                    <span class="step-badge">4</span>
+                    <span>Audio Player</span>
+                </div>
+                <div class="audio-player">
+                    <div class="song-title" id="songTitle"></div>
+                    <audio id="audioPlayer" controls></audio>
+                    <div class="controls">
+                        <button onclick="playPause()">Play/Pause</button>
+                        <button onclick="skipBack()">⏪ -5s</button>
+                        <button onclick="skipForward()">+5s ⏩</button>
+                        <button onclick="setCurrentTime()">Set Start Time</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Edit Lyrics -->
+            <div class="section" id="lyricsSection" style="display: none;">
+                <div class="section-title">
+                    <span class="step-badge">5</span>
+                    <span>Edit Lyrics & Timing</span>
+                </div>
+                <div class="lyrics-container" id="lyricsContainer"></div>
+                <button class="add-lyric-btn" onclick="addNewLyric()">+ Add New Line</button>
+            </div>
+
+            <!-- Step 6: Generate -->
+            <div class="section" id="generateSection" style="display: none;">
+                <div class="section-title">
+                    <span class="step-badge">6</span>
+                    <span>Generate Video</span>
+                </div>
+                <button onclick="generateVideo()" class="btn-success">Generate Karaoke Video</button>
+                <div id="generateStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lyrics = [];
+        let currentAudioPath = null;
+        let selectedLyricIndex = null;
+
+        // Download audio
+        async function downloadAudio() {
+            const url = document.getElementById('youtubeUrl').value;
+            if (!url) {
+                showStatus('downloadStatus', 'Please enter a YouTube URL', 'error');
+                return;
+            }
+
+            showStatus('downloadStatus', 'Downloading audio...', 'info');
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('downloadStatus', `Downloaded: ${data.title}`, 'success');
+                    document.getElementById('separateBtn').disabled = false;
+                    currentAudioPath = data.audio_path;
+                } else {
+                    showStatus('downloadStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('downloadStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // Separate vocals
+        async function separateVocals() {
+            showStatus('separateStatus', 'Separating vocals... (2-3 minutes)', 'info');
+            document.getElementById('separateBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/separate', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('separateStatus', 'Vocals separated successfully!', 'success');
+                    document.getElementById('extractBtn').disabled = false;
+                } else {
+                    showStatus('separateStatus', `Error: ${data.error}`, 'error');
+                    document.getElementById('separateBtn').disabled = false;
+                }
+            } catch (error) {
+                showStatus('separateStatus', `Error: ${error}`, 'error');
+                document.getElementById('separateBtn').disabled = false;
+            }
+        }
+
+        // Extract lyrics
+        async function extractLyrics() {
+            showStatus('extractStatus', 'Extracting lyrics with AI... (1-2 minutes)', 'info');
+            document.getElementById('extractBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/extract-lyrics', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    lyrics = data.lyrics;
+                    showStatus('extractStatus', `Extracted ${lyrics.length} lines (Language: ${data.language})`, 'success');
+
+                    // Show audio player and lyrics editor
+                    document.getElementById('audioSection').style.display = 'block';
+                    document.getElementById('lyricsSection').style.display = 'block';
+                    document.getElementById('generateSection').style.display = 'block';
+
+                    // Load audio
+                    loadAudio();
+                    renderLyrics();
+                } else {
+                    showStatus('extractStatus', `Error: ${data.error}`, 'error');
+                    document.getElementById('extractBtn').disabled = false;
+                }
+            } catch (error) {
+                showStatus('extractStatus', `Error: ${error}`, 'error');
+                document.getElementById('extractBtn').disabled = false;
+            }
+        }
+
+        // Load audio player
+        function loadAudio() {
+            if (currentAudioPath) {
+                const audio = document.getElementById('audioPlayer');
+                audio.src = `/api/audio/${encodeURIComponent(currentAudioPath)}`;
+
+                // Highlight current lyric as audio plays
+                audio.addEventListener('timeupdate', () => {
+                    const currentTime = audio.currentTime;
+                    lyrics.forEach((lyric, index) => {
+                        const line = document.getElementById(`lyric-${index}`);
+                        if (line) {
+                            if (currentTime >= lyric.start && currentTime <= lyric.end) {
+                                line.classList.add('active');
+                            } else {
+                                line.classList.remove('active');
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        // Render lyrics editor
+        function renderLyrics() {
+            const container = document.getElementById('lyricsContainer');
+            container.innerHTML = '';
+
+            lyrics.forEach((lyric, index) => {
+                const div = document.createElement('div');
+                div.className = 'lyric-line';
+                div.id = `lyric-${index}`;
+
+                div.innerHTML = `
+                    <div class="lyric-header">
+                        <div class="lyric-timing">
+                            <div class="timing-input">
+                                <label>Start:</label>
+                                <input type="number" step="0.1" value="${lyric.start.toFixed(1)}"
+                                       onchange="updateTiming(${index}, 'start', this.value)" />
+                            </div>
+                            <div class="timing-input">
+                                <label>End:</label>
+                                <input type="number" step="0.1" value="${lyric.end.toFixed(1)}"
+                                       onchange="updateTiming(${index}, 'end', this.value)" />
+                            </div>
+                        </div>
+                        <button onclick="seekTo(${lyric.start})">▶ Play</button>
+                    </div>
+                    <textarea class="lyric-text" rows="2"
+                              onchange="updateText(${index}, this.value)">${lyric.text}</textarea>
+                    <div class="lyric-actions">
+                        <button onclick="splitLyric(${index})">Split</button>
+                        <button class="btn-danger" onclick="deleteLyric(${index})">Delete</button>
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Update timing
+        function updateTiming(index, field, value) {
+            lyrics[index][field] = parseFloat(value);
+            saveLyrics();
+        }
+
+        // Update text
+        function updateText(index, value) {
+            lyrics[index].text = value;
+            saveLyrics();
+        }
+
+        // Delete lyric
+        function deleteLyric(index) {
+            if (confirm('Delete this line?')) {
+                lyrics.splice(index, 1);
+                renderLyrics();
+                saveLyrics();
+            }
+        }
+
+        // Split lyric
+        function splitLyric(index) {
+            const lyric = lyrics[index];
+            const mid = (lyric.start + lyric.end) / 2;
+
+            const newLyric = {
+                start: mid,
+                end: lyric.end,
+                text: ''
+            };
+
+            lyric.end = mid;
+            lyrics.splice(index + 1, 0, newLyric);
+            renderLyrics();
+            saveLyrics();
+        }
+
+        // Add new lyric
+        function addNewLyric() {
+            const audio = document.getElementById('audioPlayer');
+            const start = audio.currentTime;
+
+            lyrics.push({
+                start: start,
+                end: start + 3,
+                text: ''
+            });
+
+            lyrics.sort((a, b) => a.start - b.start);
+            renderLyrics();
+            saveLyrics();
+        }
+
+        // Audio controls
+        function playPause() {
+            const audio = document.getElementById('audioPlayer');
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function skipBack() {
+            const audio = document.getElementById('audioPlayer');
+            audio.currentTime = Math.max(0, audio.currentTime - 5);
+        }
+
+        function skipForward() {
+            const audio = document.getElementById('audioPlayer');
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        }
+
+        function seekTo(time) {
+            const audio = document.getElementById('audioPlayer');
+            audio.currentTime = time;
+            audio.play();
+        }
+
+        function setCurrentTime() {
+            const audio = document.getElementById('audioPlayer');
+            alert(`Current time: ${audio.currentTime.toFixed(1)}s`);
+        }
+
+        // Save lyrics to server
+        async function saveLyrics() {
+            await fetch('/api/update-lyrics', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lyrics})
+            });
+        }
+
+        // Generate video
+        async function generateVideo() {
+            showStatus('generateStatus', 'Generating karaoke video... (3-5 minutes)', 'info');
+
+            try {
+                const response = await fetch('/api/generate', {method: 'POST'});
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('generateStatus', `Video ready: ${data.output_path}`, 'success');
+                } else {
+                    showStatus('generateStatus', `Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('generateStatus', `Error: ${error}`, 'error');
+            }
+        }
+
+        // Show status message
+        function showStatus(elementId, message, type) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Karaoke Timing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00d9ff;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #999;
+        }
+
+        .step {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #0f3460;
+        }
+
+        .step h2 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            background: #0f3460;
+            border: 2px dashed #00d9ff;
+            border-radius: 8px;
+            color: #eee;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        audio {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .big-time {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-size: 20px;
+            padding: 20px;
+        }
+
+        .btn-end {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            font-size: 20px;
+            padding: 20px;
+        }
+
+        .lyric-input {
+            width: 100%;
+            padding: 15px;
+            background: #0f3460;
+            border: 2px solid #00d9ff;
+            border-radius: 8px;
+            color: #eee;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .lyric-input:focus {
+            outline: none;
+            border-color: #00f2fe;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .lyrics-list {
+            margin-top: 20px;
+        }
+
+        .lyric-item {
+            background: #0f3460;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .lyric-item.playing {
+            border-color: #00d9ff;
+            background: #1a4d6d;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .lyric-time {
+            min-width: 150px;
+            font-weight: 600;
+            color: #00d9ff;
+            font-size: 14px;
+        }
+
+        .lyric-text {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .lyric-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .lyric-actions button {
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+        }
+
+        .btn-play {
+            background: #3498db;
+        }
+
+        .hint {
+            background: #2a2a3e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #00d9ff;
+        }
+
+        .hint strong {
+            color: #00d9ff;
+        }
+
+        .export-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            font-size: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .count {
+            color: #00d9ff;
+            font-weight: 700;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status.ready {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+        }
+
+        kbd {
+            background: #0f3460;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #00d9ff;
+            font-family: monospace;
+            font-weight: 600;
+            color: #00d9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 Easy Karaoke Timing</h1>
+        <p class="subtitle">Simple, fast, and it actually works!</p>
+
+        <!-- Step 1: Load Audio -->
+        <div class="step">
+            <h2>📁 Step 1: Load Your Audio File</h2>
+            <input type="file" id="audioFile" accept="audio/*" onchange="loadAudio(event)" />
+            <audio id="audioPlayer" controls></audio>
+        </div>
+
+        <!-- Step 2: Current Time -->
+        <div class="step" id="timingSection" style="display: none;">
+            <h2>⏱️ Step 2: Add Lyrics with Timing</h2>
+
+            <div class="hint">
+                <strong>How it works:</strong><br>
+                1. Play the song<br>
+                2. Press <kbd>S</kbd> when a line starts (or click "START")<br>
+                3. Type the lyric<br>
+                4. Press <kbd>E</kbd> when the line ends (or click "END")<br>
+                5. Repeat!
+            </div>
+
+            <div class="big-time" id="currentTime">0:00.0</div>
+
+            <div class="controls">
+                <button onclick="playPause()">⏯ PLAY/PAUSE</button>
+                <button onclick="skipBack()">⏪ -3s</button>
+                <button onclick="skipForward()">⏩ +3s</button>
+            </div>
+
+            <div class="controls">
+                <button class="btn-start" onclick="setStart()">📍 START (S)</button>
+                <button class="btn-end" onclick="setEnd()">✓ END (E)</button>
+            </div>
+
+            <input type="text" id="lyricInput" class="lyric-input"
+                   placeholder="Type lyric here..."
+                   onkeypress="handleEnter(event)" />
+
+            <div id="currentStatus"></div>
+        </div>
+
+        <!-- Step 3: Lyrics List -->
+        <div class="step" id="listSection" style="display: none;">
+            <h2>📝 Your Lyrics (<span id="count" class="count">0</span> lines)</h2>
+            <div class="lyrics-list" id="lyricsList"></div>
+        </div>
+
+        <!-- Step 4: Export -->
+        <div class="step" id="exportSection" style="display: none;">
+            <h2>💾 Step 3: Export</h2>
+            <button class="export-btn" onclick="exportJSON()">📥 DOWNLOAD LYRICS FILE</button>
+        </div>
+    </div>
+
+    <script>
+        let lyrics = [];
+        let startTime = null;
+        const audio = document.getElementById('audioPlayer');
+        const lyricInput = document.getElementById('lyricInput');
+
+        // Load audio
+        function loadAudio(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                audio.src = url;
+                audio.load();
+
+                document.getElementById('timingSection').style.display = 'block';
+                document.getElementById('listSection').style.display = 'block';
+                document.getElementById('exportSection').style.display = 'block';
+            }
+        }
+
+        // Update time display
+        audio.addEventListener('timeupdate', () => {
+            const t = audio.currentTime;
+            const mins = Math.floor(t / 60);
+            const secs = (t % 60).toFixed(1);
+            document.getElementById('currentTime').textContent = `${mins}:${secs.padStart(4, '0')}`;
+
+            // Highlight current lyric
+            lyrics.forEach((lyric, i) => {
+                const el = document.getElementById(`lyric-${i}`);
+                if (el) {
+                    if (t >= lyric.start && t <= lyric.end) {
+                        el.classList.add('playing');
+                    } else {
+                        el.classList.remove('playing');
+                    }
+                }
+            });
+        });
+
+        // Play/Pause
+        function playPause() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // Skip
+        function skipBack() {
+            audio.currentTime = Math.max(0, audio.currentTime - 3);
+        }
+
+        function skipForward() {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 3);
+        }
+
+        // Set start
+        function setStart() {
+            startTime = audio.currentTime;
+            showStatus(`Start: ${formatTime(startTime)} ✓`, 'ready');
+            lyricInput.focus();
+        }
+
+        // Set end
+        function setEnd() {
+            if (startTime === null) {
+                alert('Press START first!');
+                return;
+            }
+
+            const endTime = audio.currentTime;
+            const text = lyricInput.value.trim();
+
+            if (!text) {
+                alert('Please type the lyric text!');
+                lyricInput.focus();
+                return;
+            }
+
+            lyrics.push({
+                start: startTime,
+                end: endTime,
+                text: text
+            });
+
+            lyrics.sort((a, b) => a.start - b.start);
+
+            lyricInput.value = '';
+            startTime = null;
+            showStatus('');
+            renderLyrics();
+        }
+
+        // Show status
+        function showStatus(msg, className = '') {
+            const status = document.getElementById('currentStatus');
+            status.innerHTML = msg ? `<div class="status ${className}">${msg}</div>` : '';
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = (seconds % 60).toFixed(1);
+            return `${mins}:${secs.padStart(4, '0')}`;
+        }
+
+        // Render lyrics
+        function renderLyrics() {
+            const container = document.getElementById('lyricsList');
+            container.innerHTML = '';
+
+            lyrics.forEach((lyric, i) => {
+                const div = document.createElement('div');
+                div.className = 'lyric-item';
+                div.id = `lyric-${i}`;
+
+                div.innerHTML = `
+                    <div class="lyric-time">${formatTime(lyric.start)} → ${formatTime(lyric.end)}</div>
+                    <div class="lyric-text">${lyric.text}</div>
+                    <div class="lyric-actions">
+                        <button class="btn-play" onclick="seekTo(${lyric.start})">▶</button>
+                        <button class="btn-delete" onclick="deleteLyric(${i})">✕</button>
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            document.getElementById('count').textContent = lyrics.length;
+        }
+
+        // Delete lyric
+        function deleteLyric(index) {
+            lyrics.splice(index, 1);
+            renderLyrics();
+        }
+
+        // Seek to time
+        function seekTo(time) {
+            audio.currentTime = time;
+            audio.play();
+        }
+
+        // Export JSON
+        function exportJSON() {
+            if (lyrics.length === 0) {
+                alert('No lyrics to export!');
+                return;
+            }
+
+            const data = {
+                segments: lyrics.map(l => ({
+                    start: l.start,
+                    end: l.end,
+                    text: l.text
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'karaoke-lyrics.json';
+            a.click();
+
+            alert('Lyrics file downloaded! Now run the karaoke maker with this file.');
+        }
+
+        // Handle Enter key
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                setEnd();
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                return;
+            }
+
+            if (e.key === ' ') {
+                e.preventDefault();
+                playPause();
+            } else if (e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                setStart();
+            } else if (e.key === 'e' || e.key === 'E') {
+                e.preventDefault();
+                setEnd();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                skipBack();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                skipForward();
+            }
+        });
+    </script>
+</body>
+</html>

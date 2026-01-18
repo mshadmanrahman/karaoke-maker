@@ -1,0 +1,8 @@
+yt-dlp
+demucs
+openai-whisper
+moviepy
+pillow
+numpy
+torch
+torchaudio
