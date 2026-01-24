@@ -1,158 +1,202 @@
-# Karaoke Maker
+# 🎤 Karaoke Maker
 
-Transform any YouTube video into a karaoke video with synchronized lyrics.
+Transform any YouTube video into a professional karaoke video with synchronized lyrics using AI.
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-Web_UI-green.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-- Downloads audio from YouTube videos
-- Removes lead vocals using Demucs (high-quality separation)
-- Extracts lyrics with timestamps using Whisper AI
-- Generates karaoke video with highlighted lyrics
-- Line-by-line highlighting for easy singing
+## ✨ Features
 
-## Requirements
+- **🎵 YouTube Download** - Download audio from any YouTube video using pytubefix
+- **🎚️ Vocal Separation** - AI-powered vocal/instrumental separation using Demucs
+- **📝 Smart Lyrics** - Auto-extract timestamped lyrics using OpenAI Whisper
+- **✏️ Lyrics Editor** - Manual timing with play/pause, inline editing, and keyboard shortcuts
+- **🎬 Video Generation** - Create karaoke videos with highlighted, synchronized lyrics
+- **🌐 Web Interface** - Beautiful, modern web UI with progress indicators
+
+## 🖥️ Web Interface
+
+The app features a sleek, modern web interface with:
+- Step-by-step workflow (Download → Separate → Time → Generate)
+- Real-time progress bars for long operations
+- Inline lyrics editing with keyboard shortcuts
+- Play/pause controls for precise timing
+
+## 📋 Requirements
 
 - Python 3.8+
-- ffmpeg
-- macOS/Linux (tested on macOS)
+- ffmpeg (for audio processing)
+- macOS/Linux (tested on macOS with Apple Silicon)
 
-## Installation
+## 🚀 Quick Start
 
-### 1. Install ffmpeg (if not already installed)
+### 1. Install ffmpeg
 
+**macOS (Homebrew):**
 ```bash
+# Install Homebrew if not installed
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install ffmpeg
 brew install ffmpeg
 ```
 
-### 2. Run setup script
+**Ubuntu/Debian:**
+```bash
+sudo apt update && sudo apt install ffmpeg
+```
+
+### 2. Clone and Setup
 
 ```bash
+git clone https://github.com/mshadmanrahman/karaoke-maker.git
 cd karaoke-maker
-./setup.sh
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-This will:
-- Create a Python virtual environment
-- Install all required dependencies
-- Set up configuration files
-
-### 3. Configure output directory
-
-Edit `.env` file to set where karaoke videos should be saved:
+### 3. Run the Web App
 
 ```bash
-OUTPUT_DIR=/Users/yourname/Desktop/Karaoke
-TEMP_DIR=/tmp/karaoke-temp
+source venv/bin/activate
+python app.py
 ```
 
-## Usage
+Open your browser to **http://localhost:5001**
 
-### Basic usage
+## 📖 Usage
+
+### Web Interface (Recommended)
+
+1. **Download**: Paste a YouTube URL and press Enter or click Download
+2. **Separate**: Click "Separate Vocals" (takes 2-3 minutes)
+3. **Time Lyrics**: 
+   - Click "Auto-Extract Lyrics" for AI-generated lyrics, OR
+   - Manually time lyrics using keyboard shortcuts:
+     - Press `S` to mark line start
+     - Type the lyric text
+     - Press `E` to mark line end
+   - Edit any line by clicking the ✏️ button
+4. **Generate**: Click "Generate Karaoke Video" (takes 3-5 minutes)
+
+### Command Line
 
 ```bash
 source venv/bin/activate
 python karaoke_maker.py "https://youtube.com/watch?v=VIDEO_ID"
+
+# With custom output name
+python karaoke_maker.py "https://youtube.com/watch?v=VIDEO_ID" --output "My Song"
 ```
 
-### With custom output name
+## ⌨️ Keyboard Shortcuts
 
-```bash
-python karaoke_maker.py "https://youtube.com/watch?v=VIDEO_ID" --output "My Favorite Song"
-```
+| Key | Action |
+|-----|--------|
+| `S` | Set start time for current lyric |
+| `E` | Set end time and save lyric |
+| `Space` | Play/Pause audio |
+| `←` | Skip back 3 seconds |
+| `→` | Skip forward 3 seconds |
+| `Enter` | Submit URL / Save edits |
+| `Escape` | Cancel editing |
 
-### Specify output directory
-
-```bash
-python karaoke_maker.py "https://youtube.com/watch?v=VIDEO_ID" --output-dir ~/Music/Karaoke
-```
-
-## How It Works
-
-1. **Download Audio**: Uses yt-dlp to download audio from YouTube
-2. **Vocal Separation**: Uses Demucs AI to separate vocals from instrumental (2-3 minutes)
-3. **Lyrics Extraction**: Uses Whisper AI to transcribe and timestamp lyrics (1-2 minutes)
-4. **Video Generation**: Creates video with synced, highlighted lyrics (3-5 minutes)
-
-Total time: ~8-12 minutes per song
-
-## Output
-
-The tool creates:
-- `[Song Title]_[timestamp]_karaoke.mp4`: Final karaoke video
-- `[Song Title]_lyrics.json`: Timestamped lyrics (saved in temp directory)
-
-## Configuration
+## 🔧 Configuration
 
 Edit `config.py` to customize:
 
 ### Video Settings
-- `VIDEO_WIDTH`: Video width (default: 1920)
-- `VIDEO_HEIGHT`: Video height (default: 1080)
-- `VIDEO_FPS`: Frames per second (default: 30)
+```python
+VIDEO_WIDTH = 1920      # Video width
+VIDEO_HEIGHT = 1080     # Video height
+VIDEO_FPS = 30          # Frames per second
+```
 
 ### Lyrics Appearance
-- `FONT_SIZE`: Lyrics font size (default: 48)
-- `FONT_COLOR`: Default lyrics color (default: white)
-- `HIGHLIGHT_COLOR`: Active line color (default: yellow)
+```python
+FONT_SIZE = 48          # Lyrics font size
+FONT_COLOR = 'white'    # Default lyrics color
+HIGHLIGHT_COLOR = 'yellow'  # Active line color
+```
 
 ### AI Models
-- `DEMUCS_MODEL`: Vocal separation model (default: htdemucs)
-- `WHISPER_MODEL`: Speech recognition model (default: base)
-  - Options: tiny, base, small, medium, large
-  - Larger models are more accurate but slower
+```python
+DEMUCS_MODEL = 'htdemucs'  # Vocal separation model
+WHISPER_MODEL = 'base'      # Speech recognition (tiny/base/small/medium/large)
+```
 
-### Performance
-- `DEMUCS_DEVICE`: Set to 'cuda' if you have NVIDIA GPU (much faster)
+## 📁 Project Structure
 
-## Troubleshooting
+```
+karaoke-maker/
+├── app.py              # Flask web application
+├── downloader.py       # YouTube audio download (pytubefix)
+├── separator.py        # Vocal separation (Demucs)
+├── lyrics_extractor.py # Lyrics extraction (Whisper)
+├── video_generator.py  # Karaoke video creation
+├── karaoke_maker.py    # CLI interface
+├── config.py           # Configuration settings
+├── requirements.txt    # Python dependencies
+├── templates/
+│   └── app.html        # Web UI template
+└── README.md           # This file
+```
 
-### "ffmpeg not found"
-Install ffmpeg: `brew install ffmpeg`
-
-### "Out of memory" error
-- Use smaller Whisper model: edit `config.py` and set `WHISPER_MODEL = 'tiny'`
-- Close other applications
-
-### Slow processing
-- Default CPU processing takes 8-12 minutes per song
-- For faster processing, use a GPU: set `DEMUCS_DEVICE = 'cuda'` in config.py
-
-### Lyrics not syncing properly
-- Whisper auto-detects language but may struggle with heavy music
-- Try processing the original audio multiple times
-- Manual adjustment of JSON timestamps is possible
-
-## Technical Details
+## 🛠️ Technical Details
 
 ### Dependencies
-- **yt-dlp**: YouTube audio download
-- **Demucs**: AI vocal separation (Meta/Facebook)
-- **Whisper**: AI speech recognition (OpenAI)
-- **MoviePy**: Video generation and editing
-- **PyTorch**: Machine learning framework
+- **pytubefix** - YouTube audio download (replaces yt-dlp for better compatibility)
+- **Demucs** - AI vocal separation (Meta Research)
+- **Whisper** - AI speech recognition (OpenAI)
+- **MoviePy** - Video generation
+- **Flask** - Web framework
+- **PyTorch** - Machine learning framework
 
-### Models Downloaded (automatic on first run)
-- Demucs htdemucs: ~350MB
+### Models (Downloaded on First Run)
+- Demucs htdemucs: ~80MB
 - Whisper base: ~140MB
 
-Total disk space needed: ~500MB for models + your output videos
+## ❓ Troubleshooting
 
-## License
+### "ffmpeg not found"
+```bash
+# macOS
+brew install ffmpeg
 
-This is a personal hobby project. Respect copyright laws when downloading content from YouTube.
+# Ubuntu/Debian
+sudo apt install ffmpeg
+```
 
-## Tips
+### "Out of memory" error
+- Use a smaller Whisper model in `config.py`: `WHISPER_MODEL = 'tiny'`
+- Close other applications
 
-1. **Best quality**: Use songs with clear vocals and minimal background noise
-2. **Language support**: Whisper supports 90+ languages automatically
-3. **Processing time**: Plan for 10 minutes per song
-4. **Storage**: Each karaoke video is 50-150MB depending on length
+### YouTube download fails
+- The app uses pytubefix which handles most YouTube restrictions
+- Ensure you have the latest version: `pip install --upgrade pytubefix`
 
-## Future Enhancements
+### Slow processing
+- CPU processing takes 8-12 minutes per song
+- For faster processing with NVIDIA GPU: set `DEMUCS_DEVICE = 'cuda'` in config.py
 
-Potential improvements:
-- Word-by-word highlighting (currently line-by-line)
-- Custom background images/videos
-- Multiple vocal track handling
-- Batch processing
-- GUI interface
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+**Note:** Respect copyright laws when downloading content from YouTube. This tool is intended for personal use with content you have rights to use.
+
+## 🙏 Acknowledgments
+
+- [Demucs](https://github.com/facebookresearch/demucs) by Meta Research
+- [Whisper](https://github.com/openai/whisper) by OpenAI
+- [pytubefix](https://github.com/JuanBindez/pytubefix) for YouTube downloads
+
+---
+
+Made with ❤️ for karaoke enthusiasts

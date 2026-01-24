@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +32,7 @@
             text-align: center;
             padding: 60px 20px;
             background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-            border-radius: 24px;
+            border-radius: 6px;
             margin-bottom: 60px;
             position: relative;
             overflow: hidden;
@@ -79,7 +80,7 @@
         .step {
             background: white;
             border: 3px solid #1D1D1D;
-            border-radius: 16px;
+            border-radius: 4px;
             padding: 24px;
             text-align: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -132,7 +133,7 @@
         .card {
             background: white;
             border: 3px solid #1D1D1D;
-            border-radius: 20px;
+            border-radius: 5px;
             padding: 32px;
             margin-bottom: 24px;
             box-shadow: 8px 8px 0 #1D1D1D;
@@ -155,7 +156,7 @@
             width: 48px;
             height: 48px;
             background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-            border-radius: 12px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -171,12 +172,13 @@
         }
 
         /* Input fields - Retro */
-        input[type="text"], input[type="file"] {
+        input[type="text"],
+        input[type="file"] {
             width: 100%;
             padding: 14px 16px;
             background: white;
             border: 2px solid #1D1D1D;
-            border-radius: 12px;
+            border-radius: 3px;
             color: #1D1D1D;
             font-size: 15px;
             font-family: 'Inter', sans-serif;
@@ -207,7 +209,7 @@
             background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
             color: white;
             border: 2px solid #1D1D1D;
-            border-radius: 12px;
+            border-radius: 3px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -254,7 +256,7 @@
         /* Status messages - Retro badges */
         .status {
             padding: 14px 20px;
-            border-radius: 12px;
+            border-radius: 3px;
             margin: 16px 0;
             font-size: 14px;
             font-weight: 600;
@@ -281,7 +283,7 @@
         audio {
             width: 100%;
             margin: 20px 0;
-            border-radius: 12px;
+            border-radius: 3px;
         }
 
         /* Big time display - Retro digital */
@@ -289,7 +291,7 @@
             background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
             border: 3px solid #1D1D1D;
             padding: 40px;
-            border-radius: 16px;
+            border-radius: 4px;
             text-align: center;
             font-size: 64px;
             font-weight: 700;
@@ -315,7 +317,7 @@
             padding: 16px;
             background: white;
             border: 2px solid #1D1D1D;
-            border-radius: 12px;
+            border-radius: 3px;
             color: #1D1D1D;
             font-size: 18px;
             margin: 16px 0;
@@ -344,12 +346,12 @@
 
         .lyrics-list::-webkit-scrollbar-track {
             background: #F3F1EA;
-            border-radius: 6px;
+            border-radius: 2px;
         }
 
         .lyrics-list::-webkit-scrollbar-thumb {
             background: #6366F1;
-            border-radius: 6px;
+            border-radius: 2px;
             border: 2px solid #1D1D1D;
         }
 
@@ -358,7 +360,7 @@
             border: 2px solid #1D1D1D;
             padding: 16px;
             margin-bottom: 12px;
-            border-radius: 12px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -428,7 +430,7 @@
             background: #FEF3C7;
             border: 3px solid #1D1D1D;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 3px;
             margin: 20px 0;
             font-size: 14px;
             line-height: 1.8;
@@ -443,7 +445,7 @@
         kbd {
             background: white;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 2px;
             border: 2px solid #1D1D1D;
             font-family: 'Courier New', monospace;
             font-weight: 700;
@@ -478,8 +480,51 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 16px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            border: 2px solid #1D1D1D;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 50%, #6366F1 100%);
+            background-size: 200% 100%;
+            animation: progressPulse 1.5s ease-in-out infinite;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes progressPulse {
+
+            0%,
+            100% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6366F1;
+            margin-top: 8px;
         }
 
         /* Fun emoji decorations */
@@ -516,13 +561,15 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Hero Section -->
         <div class="hero">
             <div class="hero-content">
                 <h1>🎤 Karaoke Maker</h1>
-                <p>Turn any song into karaoke magic with AI. Download, separate, time lyrics, and generate professional videos.</p>
+                <p>Turn any song into karaoke magic with AI. Download, separate, time lyrics, and generate professional
+                    videos.</p>
             </div>
         </div>
 
@@ -553,7 +600,8 @@
                 <h2>Download from YouTube</h2>
             </div>
             <div class="input-group">
-                <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here..." />
+                <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here..."
+                    onkeypress="if(event.key==='Enter') downloadVideo()" />
                 <button onclick="downloadVideo()">Download</button>
             </div>
             <div id="downloadStatus"></div>
@@ -565,7 +613,8 @@
                 <div class="section-icon">🎵</div>
                 <h2>Separate Vocals</h2>
             </div>
-            <p style="margin-bottom: 16px; color: #666; font-weight: 500;">AI will magically separate vocals from instrumentals. This takes 2-3 minutes.</p>
+            <p style="margin-bottom: 16px; color: #666; font-weight: 500;">AI will magically separate vocals from
+                instrumentals. This takes 2-3 minutes.</p>
             <button class="btn-large" onclick="separateVocals()">✨ Separate Vocals</button>
             <div id="separateStatus"></div>
         </div>
@@ -603,8 +652,7 @@
                 <button class="btn-success" onclick="setEnd()">✓ END (E)</button>
             </div>
 
-            <input type="text" id="lyricInput" class="lyric-input"
-                   placeholder="Type lyric here..." />
+            <input type="text" id="lyricInput" class="lyric-input" placeholder="Type lyric here..." />
 
             <div id="timingStatus"></div>
 
@@ -627,7 +675,8 @@
                 <h2>Generate Karaoke Video</h2>
             </div>
             <p style="margin-bottom: 20px; color: #666; font-weight: 500;">
-                Ready to create your karaoke masterpiece with <span class="count" id="finalCount">0</span> perfectly timed lyrics!
+                Ready to create your karaoke masterpiece with <span class="count" id="finalCount">0</span> perfectly
+                timed lyrics!
                 This will take 3-5 minutes.
             </p>
             <button class="btn-success btn-large" onclick="generateVideo()">
@@ -675,8 +724,8 @@
             try {
                 const response = await fetch('/api/download', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({url})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
                 });
 
                 const data = await response.json();
@@ -695,14 +744,29 @@
 
         // Separate vocals
         async function separateVocals() {
-            showStatus('separateStatus', '<span class="loading"><span class="spinner"></span>Separating vocals... (2-3 minutes)</span>', 'info');
+            // Show progress bar
+            showProgress('separateStatus', 'Separating vocals...', 0);
+
+            // Simulate progress while waiting (actual progress is unknowable)
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                // Slowly increase progress, slowing down as we get closer to 90%
+                if (progress < 90) {
+                    progress += (90 - progress) * 0.02;
+                    updateProgress('separateStatus', progress, 'Separating vocals...');
+                }
+            }, 500);
 
             try {
-                const response = await fetch('/api/separate', {method: 'POST'});
+                const response = await fetch('/api/separate', { method: 'POST' });
+                clearInterval(progressInterval);
                 const data = await response.json();
 
                 if (data.success) {
-                    showStatus('separateStatus', '✓ Vocals separated successfully!', 'success');
+                    updateProgress('separateStatus', 100, 'Complete!');
+                    setTimeout(() => {
+                        showStatus('separateStatus', '✓ Vocals separated successfully!', 'success');
+                    }, 500);
                     markStepComplete(2);
                     await loadAudioPlayer();
                     showSection(3);
@@ -710,6 +774,7 @@
                     showStatus('separateStatus', `Error: ${data.error}`, 'error');
                 }
             } catch (error) {
+                clearInterval(progressInterval);
                 showStatus('separateStatus', `Error: ${error}`, 'error');
             }
         }
@@ -731,7 +796,7 @@
             showStatus('extractStatus', '<span class="loading"><span class="spinner"></span>Extracting lyrics with AI... (1-2 minutes)</span>', 'info');
 
             try {
-                const response = await fetch('/api/extract-lyrics', {method: 'POST'});
+                const response = await fetch('/api/extract-lyrics', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.success) {
@@ -783,7 +848,7 @@
                 return;
             }
 
-            lyrics.push({start: startTime, end: endTime, text: text});
+            lyrics.push({ start: startTime, end: endTime, text: text });
             lyrics.sort((a, b) => a.start - b.start);
 
             document.getElementById('lyricInput').value = '';
@@ -804,10 +869,11 @@
 
                 div.innerHTML = `
                     <div class="lyric-time">${formatTime(lyric.start)} → ${formatTime(lyric.end)}</div>
-                    <div class="lyric-text">${lyric.text}</div>
+                    <div class="lyric-text" id="lyric-text-${i}" ondblclick="editLyric(${i})">${lyric.text}</div>
                     <div class="lyric-actions">
-                        <button class="btn-play" onclick="seekTo(${lyric.start})">▶</button>
-                        <button class="btn-delete" onclick="deleteLyric(${i})">✕</button>
+                        <button class="btn-secondary" onclick="editLyric(${i})" title="Edit">✏️</button>
+                        <button class="btn-play" onclick="togglePlayFrom(${lyric.start})" title="Play/Pause from here">▶</button>
+                        <button class="btn-delete" onclick="deleteLyric(${i})" title="Delete">✕</button>
                     </div>
                 `;
 
@@ -818,16 +884,66 @@
             document.getElementById('finalCount').textContent = lyrics.length;
         }
 
+        // Edit lyric text
+        function editLyric(index) {
+            const textEl = document.getElementById(`lyric-text-${index}`);
+            const currentText = lyrics[index].text;
+
+            // Create input for editing
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentText;
+            input.className = 'lyric-edit-input';
+            input.style.cssText = 'width: 100%; padding: 8px; border: 2px solid #6366F1; border-radius: 3px; font-size: 15px;';
+
+            // Save on Enter or blur
+            const saveEdit = () => {
+                const newText = input.value.trim();
+                if (newText) {
+                    lyrics[index].text = newText;
+                }
+                renderLyrics();
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveEdit();
+                } else if (e.key === 'Escape') {
+                    renderLyrics(); // Cancel edit
+                }
+            });
+            input.addEventListener('blur', saveEdit);
+
+            textEl.innerHTML = '';
+            textEl.appendChild(input);
+            input.focus();
+            input.select();
+        }
+
         // Delete lyric
         function deleteLyric(index) {
             lyrics.splice(index, 1);
             renderLyrics();
         }
 
-        // Seek to time
+        // Seek to time and play
         function seekTo(time) {
             audio.currentTime = time;
             audio.play();
+        }
+
+        // Toggle play/pause from a specific time
+        let lastClickedTime = null;
+        function togglePlayFrom(time) {
+            // If audio is playing, just pause it
+            if (!audio.paused) {
+                audio.pause();
+            } else {
+                // If paused, seek to time and play
+                audio.currentTime = time;
+                audio.play();
+            }
         }
 
         // Format time
@@ -847,30 +963,44 @@
             // Save lyrics
             await fetch('/api/save-lyrics', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({lyrics})
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lyrics })
             });
 
             markStepComplete(3);
             showSection(4);
-            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         // Generate video
         async function generateVideo() {
-            showStatus('generateStatus', '<span class="loading"><span class="spinner"></span>Generating karaoke video... (3-5 minutes)</span>', 'info');
+            // Show progress bar
+            showProgress('generateStatus', 'Generating karaoke video...', 0);
+
+            // Simulate progress while waiting
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress < 90) {
+                    progress += (90 - progress) * 0.015;
+                    updateProgress('generateStatus', progress, 'Generating karaoke video...');
+                }
+            }, 500);
 
             try {
-                const response = await fetch('/api/generate', {method: 'POST'});
+                const response = await fetch('/api/generate', { method: 'POST' });
+                clearInterval(progressInterval);
                 const data = await response.json();
 
                 if (data.success) {
-                    showStatus('generateStatus', `✓ Video ready! Saved to: ${data.output_path}`, 'success');
+                    updateProgress('generateStatus', 100, 'Complete!');
+                    setTimeout(() => {
+                        showStatus('generateStatus', `✓ Video ready! Saved to: ${data.output_path}`, 'success');
+                    }, 500);
                     markStepComplete(4);
                 } else {
                     showStatus('generateStatus', `Error: ${data.error}`, 'error');
                 }
             } catch (error) {
+                clearInterval(progressInterval);
                 showStatus('generateStatus', `Error: ${error}`, 'error');
             }
         }
@@ -879,6 +1009,29 @@
         function showStatus(elementId, message, type) {
             const el = document.getElementById(elementId);
             el.innerHTML = message ? `<div class="status ${type}">${message}</div>` : '';
+        }
+
+        function showProgress(elementId, message, percent) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `
+                <div class="status info">
+                    <div>${message}</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="progress-text">${Math.round(percent)}% complete</div>
+                </div>
+            `;
+        }
+
+        function updateProgress(elementId, percent, message) {
+            const el = document.getElementById(elementId);
+            const bar = el.querySelector('.progress-bar');
+            const text = el.querySelector('.progress-text');
+            const msgEl = el.querySelector('.status.info > div:first-child');
+            if (bar) bar.style.width = `${percent}%`;
+            if (text) text.textContent = `${Math.round(percent)}% complete`;
+            if (msgEl && message) msgEl.textContent = message;
         }
 
         function markStepComplete(step) {
@@ -890,7 +1043,7 @@
 
         function showSection(num) {
             document.getElementById(`section${num}`).classList.remove('hidden');
-            document.getElementById(`section${num}`).scrollIntoView({behavior: 'smooth', block: 'start'});
+            document.getElementById(`section${num}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // Keyboard shortcuts
@@ -919,4 +1072,5 @@
         document.getElementById('step1').classList.add('active');
     </script>
 </body>
+
 </html>

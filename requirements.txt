@@ -1,3 +1,5 @@
+flask
+pytubefix
 yt-dlp
 demucs
 openai-whisper

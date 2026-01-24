@@ -49,9 +49,9 @@ class VocalSeparator:
         logger.info(f"This may take 2-3 minutes for a 4-minute song...")
 
         try:
-            # Run demucs command
+            # Run demucs command via Python module
             cmd = [
-                'demucs',
+                'python3', '-m', 'demucs',
                 '--two-stems', 'vocals',  # Only separate vocals and accompaniment
                 '--out', str(self.output_dir),
                 '--device', self.device,
@@ -61,11 +61,17 @@ class VocalSeparator:
                 str(audio_path)
             ]
 
+            # Get current environment and add homebrew to PATH
+            import os
+            env = os.environ.copy()
+            env['PATH'] = '/opt/homebrew/bin:' + env.get('PATH', '')
+            
             result = subprocess.run(
                 cmd,
                 check=True,
                 capture_output=True,
-                text=True
+                text=True,
+                env=env
             )
 
             logger.info("Vocal separation complete!")

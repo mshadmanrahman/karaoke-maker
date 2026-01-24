@@ -3,6 +3,11 @@ Lyrics extraction module using Whisper
 Transcribes audio and extracts timestamped lyrics
 """
 import logging
+import os
+
+# Ensure ffmpeg is in PATH (for Homebrew on macOS)
+os.environ['PATH'] = '/opt/homebrew/bin:' + os.environ.get('PATH', '')
+
 import whisper
 from pathlib import Path
 from typing import List, Dict

@@ -1,7 +1,29 @@
 #!/usr/bin/env python3
 """
-All-in-one Karaoke Maker Web App
-Complete workflow: Download → Separate → Time Lyrics → Generate Video
+Karaoke Maker - Flask Web Application
+=====================================
+
+A modern web interface for creating karaoke videos from YouTube.
+
+Workflow:
+    1. Download - Get audio from YouTube using pytubefix
+    2. Separate - AI vocal/instrumental separation using Demucs
+    3. Time Lyrics - Manual or AI-assisted lyrics timing
+    4. Generate - Create karaoke video with synced lyrics
+
+API Routes:
+    GET  /                  - Main web interface
+    POST /api/download      - Download audio from YouTube URL
+    POST /api/separate      - Separate vocals from instrumental
+    POST /api/extract-lyrics - Auto-extract lyrics with Whisper AI
+    POST /api/save-lyrics   - Save manually timed lyrics
+    POST /api/generate      - Generate final karaoke video
+    GET  /api/status        - Get current session status
+    GET  /api/audio/<name>  - Serve audio files for playback
+
+Usage:
+    python app.py
+    # Open http://localhost:5001 in browser
 """
 from flask import Flask, render_template, request, jsonify, send_file, send_from_directory
 from pathlib import Path
