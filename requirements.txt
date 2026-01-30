@@ -1,10 +1,20 @@
+# Core dependencies
 flask
-pytubefix
+gradio>=4.0.0
+
+# YouTube downloading
 yt-dlp
-demucs
-openai-whisper
+
+# Audio/Video processing  
 moviepy
 pillow
 numpy
+
+# ML dependencies (Demucs, Whisper)
 torch
 torchaudio
+demucs
+openai-whisper
+
+# For pytubefix fallback
+pytubefix
